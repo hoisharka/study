@@ -32,3 +32,20 @@
 
 
    
+* 우분투에 nvm 설치
+** 관련 패키지 설치
+   #+begin_src sh
+     sudo apt-get install build-essential libssl-dev
+   #+end_src
+** nvm 설치
+   #+begin_src sh
+     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+     source ~/.bashrc
+     nvm --version
+   #+end_src
+** npm 설치
+   #+begin_src sh
+     nvm install 10.15.1
+   #+end_src
+** 참고
+   - https://trustyoo86.github.io/nodejs/2019/02/18/ubuntu-nvm.html
