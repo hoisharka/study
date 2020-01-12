@@ -1,0 +1,164 @@
+* legacy
+** 가상환경
+**** 참고
+     https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/
+**** conda 업데이트
+     #+begin_src bash
+       conda update conda
+     #+end_src
+**** 가상 환경 생성
+     #+begin_src bash
+       conda create -n env_name python=x.x anaconda
+       # 예) conda create -n python3.7 python=3.7 anaconda
+     #+end_src
+**** 가상 환경 활성화
+     #+begin_src bash
+       conda activate env_name
+       # 예) conda cativate python3.7
+     #+end_src
+**** 가상 환경에 패키지 설치
+     #+begin_src bash
+       conda install -n env_name package_name
+     #+end_src
+** archive
+   https://repo.continuum.io/archive/
+** CondaHTTPError: HTTP 000 Connection Failed during conda install with new 2018.12 Anaconda3 Windows install
+   https://github.com/conda/conda/issues/8046
+   2018.12 버전으로 설치했었는데 ~conda update conda~ 와 같은 명령어가 모두 안먹히는 상태였다. 
+   일단 버전을 낮춰서 설치해봤더니 괜찮아졌다. 다시 설치한 버전은 Anaconda3-5.3.1이다.
+** jedi
+*** 참고
+    - jedi
+      - https://jedi.readthedocs.io/en/latest/
+    - emacs-jedi
+      - https://github.com/tkf/emacs-jedi
+*** anaconda 환경에서의 이슈
+    emacs 개발환경을 elpy나 anaconda로 선택할 수 있다.
+    나는 anaconda를 선택했고 가상환경은 anaconda에 포함된 기능으로 사용하고 있다.
+  
+    그런데 코드 자동완성 기능인 jedi를 emacs에 설치하고 
+    jedi-server도 설치하려다보니 virtualenv가 설치되지 않았다는 에러가 떴다.
+
+    anaconda를 사용중이고 자체적으로 가상환경 기능을 제공하는데
+    다른 프로그램을 설치해서 사용하다보면 문제가 발생할 것 같은 생각이 들었다.
+
+    그래서 virtualenv를 설치하지 않고 jedi를 사용하는 방법을
+    알아보았다.
+
+*** jedi width anaconda
+**** 참고한 페이지
+     - https://stackoverflow.com/questions/21703693/can-virtualenv-be-avoided-when-using-emacs-jedi-in-anaconda
+       - "jedi-server anaconda"로 검색
+**** 해결 과정
+     - sexpdata, epc 패키지가 필요하다는 것 같아서 설치했다.
+     - virtualenv를 요구하는 것은 
+       emacs에 elpy 패키지가 설치되어 있을 때만 그렇다는 거 같았다.
+       혹시나 해서 myInit.org에서 elpy를 검색해보니
+       예전에 내가 use-package로 elpy를 설치하는 설정을 넣어놨었다.
+
+       해당 설정은 지우고 emacs 패키지 디렉토리에서 elpy패키지도 지웠다.
+     - 그리고 emacs를 재실행했더니 자동완성 기능이 작동했다
+   
+
+
+
+
+
+** anaconda eldoc
+*** 참고  
+    https://github.com/proofit404/anaconda-mode#eldoc
+*** 단축키
+    - M-?
+
+* emacs the best python editor
+  https://realpython.com/emacs-the-best-python-editor/
+
+* windows os에 파이썬 설치
+  https://realpython.com/installing-python/#step-1-download-the-python-3-installer
+** 환경변수
+  - C:\Users\thkim\AppData\Local\Programs\Python\Python27\
+  - C:\Users\thkim\AppData\Local\Programs\Python\Python27\Scripts\
+  - C:\Users\thkim\AppData\Local\Programs\Python\Python38\
+  - C:\Users\thkim\AppData\Local\Programs\Python\Python38\Scripts\
+** python 2, 3을 동시에 사용하려면 어떻게 설정해야 하는가?
+   python 은 python3로, python2는 python2 로 사용하는 것이 목적
+
+*** 심볼릭 링크 추가
+    관리자 모드로 cmd 실행 > 아래 명령어 실행
+    #+begin_src cmd
+    mklink C:\Windows\python2.exe C:\Users\thkim\AppData\Local\Programs\Python\Python27\python.exe
+    #+end_src
+   
+*** 참고
+    https://http2.tistory.com/19
+* jupyter in windows
+** 설치 및 서버 실행
+   https://realpython.com/jupyter-notebook-introduction/#getting-up-and-running-with-jupyter-notebook
+
+   #+begin_src shell
+     pip install jupyter
+     jupyter notebook
+   #+end_src
+  
+   에러가 발생해서 해결방법을 찾아 봄.
+   https://stackoverflow.com/questions/58422817/jupyter-notebook-with-python-3-8-notimplementederror#
+
+   =Lib\site-packages\tornado\platform\tornado/platform/asyncio.py= 파일에 아래 코드를 추가해서 해결함.
+   #+begin_src python
+     import sys
+
+     if sys.platform == 'win32':
+         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+   #+end_src
+
+   
+* upgrade pip
+  #+begin_src shell
+    python -m pip install --upgrade pip
+  #+end_src
+
+* jupyter console
+  windows에서 jupyter console 실행 시 에러가
+  발생했다. =c:\users\thkim\appdata\local\programs\python\python38\lib\site-packages\jupyter_console\ptshell.py=
+  파일에서 발생한 에러인데 =import name 'cast_unicode_py2' from
+  'IPython.utils.py3compat'= 구문이 문제였다. cast_unicode_py2는
+  =c:\users\thkim\appdata\local\programs\python\python38\lib\site-packages\IPython\utils\py3compat.py=
+  에 정의되지 않았고 cast_unicode 만 정의되어있었다. 그래서 단순히
+  =c:\users\thkim\appdata\local\programs\python\python38\lib\site-packages\jupyter_console\ptshell.py=
+  파일에서 cast_unicode_py2를 cast_unicode로 바꿔주었더니 에러 없이
+  동작했다.
+
+
+* pyqt
+  https://wikidocs.net/4236
+
+  예제 코드
+  #+begin_src python
+    import sys
+    from PyQt5.QtWidgets import *
+
+    app = QApplication(sys.argv)
+    label = QLabel("Hello PyQt")
+    label.show()
+    app.exec_()
+  #+end_src
+
+  예제 코드를 실행시키기 위해 필요한 PyQt 패키지가
+  =C:\Users\thkim\AppData\Local\Programs\Python\Python38\Lib\site-packages=
+  경로에 있는지 확인해 보니 없음.
+
+  PyQt5를 pip로 설치.
+  #+begin_src shell
+    pip install PyQt5
+  #+end_src
+* rstrip
+  오른쪽 문자열 제거. 가장 오른쪽 문자가 파라미터로 들어간 string의
+  요소에 포함된 문자이면 제거하고 제거 후 가장 오른쪽의 문자열로 다시
+  동일한 작업을 수행. 오른쪽 문자가 파라미터의 문자열에 포함되지 안을
+  때까지 제거를 반복함.
+  #+begin_src python
+    # 가장 오른쪽 문자가 >이고 good 이전까지 
+    # 파라미터 문자열에 포함되는 문자가 배열되어있으므로
+    # 결과는 ">>> python is good" 가 된다.
+    ">>> python is good <<<>> ".rstrip('<> ')
+  #+end_src
